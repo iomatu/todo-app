@@ -15,7 +15,7 @@ import { useNotes } from './hooks/useNotes'
 import { sortTasks } from './utils/sort'
 
 function App() {
-  const { tasks, addTask, updateTask, deleteTask } = useTasks()
+  const { tasks, loading, addTask, updateTask, deleteTask } = useTasks()
   const { categories, addCategory, deleteCategory } = useCategories()
   const { settings, updateSettings } = useSettings()
   const { notes, addNote, updateNote, deleteNote } = useNotes()
@@ -72,39 +72,43 @@ function App() {
 
       <main className="app-main">
         {page === 'tasks' && (
-          <>
-            <TaskForm
-              onAdd={addTask}
-              onUpdate={updateTask}
-              editingTask={editingTask}
-              onCancelEdit={() => setEditingTask(null)}
-              categories={categories}
-              onAddCategory={addCategory}
-              defaultWarningHours={settings.warningHours}
-            />
-            <CategoryTabs
-              categories={categories}
-              current={activeCategory}
-              onChange={v => updateSettings({ activeCategory: v })}
-              onDelete={handleDeleteCategory}
-            />
-            <SortSelect
-              value={sortKey}
-              onChange={v => updateSettings({ sortKey: v })}
-            />
-            <StatusFilter
-              current={filter}
-              onChange={v => updateSettings({ filter: v })}
-            />
-            <TaskList
-              tasks={filteredTasks}
-              onUpdate={updateTask}
-              onDelete={deleteTask}
-              onEdit={setEditingTask}
-              categories={categories}
-              getWarningHours={getWarningHours}
-            />
-          </>
+          loading ? (
+            <div className="loading">読み込み中...</div>
+          ) : (
+            <>
+              <TaskForm
+                onAdd={addTask}
+                onUpdate={updateTask}
+                editingTask={editingTask}
+                onCancelEdit={() => setEditingTask(null)}
+                categories={categories}
+                onAddCategory={addCategory}
+                defaultWarningHours={settings.warningHours}
+              />
+              <CategoryTabs
+                categories={categories}
+                current={activeCategory}
+                onChange={v => updateSettings({ activeCategory: v })}
+                onDelete={handleDeleteCategory}
+              />
+              <SortSelect
+                value={sortKey}
+                onChange={v => updateSettings({ sortKey: v })}
+              />
+              <StatusFilter
+                current={filter}
+                onChange={v => updateSettings({ filter: v })}
+              />
+              <TaskList
+                tasks={filteredTasks}
+                onUpdate={updateTask}
+                onDelete={deleteTask}
+                onEdit={setEditingTask}
+                categories={categories}
+                getWarningHours={getWarningHours}
+              />
+            </>
+          )
         )}
 
         {page === 'notes' && (

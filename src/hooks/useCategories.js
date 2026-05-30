@@ -1,30 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
-import { loadCategories, saveCategories } from '../services/storage'
+import { useState, useEffect } from 'react'
+import { loadCategories, createCategory, removeCategory } from '../services/storage'
 
 export function useCategories() {
-  const [categories, setCategories] = useState(() => loadCategories())
-  const isFirstRender = useRef(true)
+  const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    saveCategories(categories)
-  }, [categories])
+    loadCategories().then(data => setCategories(data))
+  }, [])
 
-  function addCategory(name) {
+  async function addCategory(name) {
     const trimmed = name.trim()
     if (!trimmed) return
-    if (categories.some(c => c.name === trimmed)) return // 重複チェック
-    setCategories(prev => [
-      ...prev,
-      { id: crypto.randomUUID(), name: trimmed }
-    ])
+    if (categories.some(c => c.name === trimmed)) return
+    const newCategory = { id: crypto.randomUUID(), name: trimmed }
+    setCategories(prev => [...prev, newCategory])
+    await createCategory(newCategory)
   }
 
-  function deleteCategory(id) {
+  async function deleteCategory(id) {
     setCategories(prev => prev.filter(c => c.id !== id))
+    await removeCategory(id)
   }
 
   return { categories, addCategory, deleteCategory }

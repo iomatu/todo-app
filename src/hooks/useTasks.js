@@ -1,31 +1,34 @@
-import { useState, useEffect, useRef } from 'react'
-import { loadTasks, saveTasks } from '../services/storage'
+import { useState, useEffect } from 'react'
+import { loadTasks, createTask, editTask, removeTask } from '../services/storage'
 
 export function useTasks() {
-  const [tasks, setTasks] = useState(() => loadTasks()) // ← ここで直接読み込む
-  const isFirstRender = useRef(true)
+  const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    saveTasks(tasks)
-  }, [tasks])
+    loadTasks().then(data => {
+      setTasks(data)
+      setLoading(false)
+    })
+  }, [])
 
-  function addTask(task) {
-    setTasks(prev => [...prev, task])
+  async function addTask(task) {
+    setTasks(prev => [task, ...prev])
+    await createTask(task)
   }
 
-  function updateTask(id, changes) {
+  async function updateTask(id, changes) {
+    const updatedAt = new Date().toISOString()
     setTasks(prev =>
-      prev.map(t => t.id === id ? { ...t, ...changes, updatedAt: new Date().toISOString() } : t)
+      prev.map(t => t.id === id ? { ...t, ...changes, updatedAt } : t)
     )
+    await editTask(id, { ...changes, updatedAt })
   }
 
-  function deleteTask(id) {
+  async function deleteTask(id) {
     setTasks(prev => prev.filter(t => t.id !== id))
+    await removeTask(id)
   }
 
-  return { tasks, addTask, updateTask, deleteTask }
+  return { tasks, loading, addTask, updateTask, deleteTask }
 }
