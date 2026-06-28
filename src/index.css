@@ -757,3 +757,116 @@ a { color: inherit; text-decoration: none; }
   color: #9c7cc4;
   font-weight: 600;
 }
+
+/* ログイン画面 */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.1);
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #9c7cc4;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.username-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.username-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.username-status.available { color: #065f46; }
+.username-status.taken { color: #be185d; }
+.username-status.checking { color: #9c7cc4; }
+
+.login-error {
+  font-size: 0.85rem;
+  color: #be185d;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-switch {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ユーザーメニュー */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 12px;
+  border: 2px solid #e9d5ff;
+}
+
+.username-display {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.btn-signout {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #db2777;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: #fdf2f8;
+  border: 1px solid #f9a8d4;
+  transition: all 0.2s;
+}
+
+.btn-signout:hover {
+  background: #db2777;
+  color: #fff;
+  border-color: #db2777;
+}

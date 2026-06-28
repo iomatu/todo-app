@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import { loadNotes, createNote, editNote, removeNote } from '../services/storage'
 
-export function useNotes() {
+export function useNotes(userId) {
   const [notes, setNotes] = useState([])
 
   useEffect(() => {
-    loadNotes().then(data => setNotes(data))
-  }, [])
+    if (!userId) { setNotes([]); return }
+    loadNotes(userId).then(data => setNotes(data))
+  }, [userId])
 
   async function addNote(note) {
     setNotes(prev => [note, ...prev])
-    await createNote(note)
+    await createNote(note, userId)
   }
 
   async function updateNote(id, changes) {

@@ -8,17 +8,21 @@ import SortSelect from './components/SortSelect'
 import TabNav from './components/TabNav'
 import NoteForm from './components/NoteForm'
 import NoteList from './components/NoteList'
+import LoginForm from './components/LoginForm'
 import { useTasks } from './hooks/useTasks'
 import { useCategories } from './hooks/useCategories'
 import { useSettings } from './hooks/useSettings'
 import { useNotes } from './hooks/useNotes'
+import { useAuth } from './hooks/useAuth'
+import { signOut } from './services/auth'
 import { sortTasks } from './utils/sort'
 
 function App() {
-  const { tasks, loading, addTask, updateTask, deleteTask } = useTasks()
-  const { categories, addCategory, deleteCategory } = useCategories()
+  const { user, username, loading: authLoading } = useAuth()
+  const { tasks, loading, addTask, updateTask, deleteTask } = useTasks(user?.id)
+  const { categories, addCategory, deleteCategory } = useCategories(user?.id)
   const { settings, updateSettings } = useSettings()
-  const { notes, addNote, updateNote, deleteNote } = useNotes()
+  const { notes, addNote, updateNote, deleteNote } = useNotes(user?.id)
   const [editingTask, setEditingTask] = useState(null)
   const [editingNote, setEditingNote] = useState(null)
   const [page, setPage] = useState('tasks')
@@ -45,6 +49,14 @@ function App() {
 
   const remainingTasks = tasks.filter(t => t.status !== 'done').length
 
+  if (authLoading) {
+    return <div className="login-wrapper"><div className="loading">読み込み中...</div></div>
+  }
+
+  if (!user) {
+    return <LoginForm onLogin={() => {}} />
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -55,12 +67,18 @@ function App() {
               {remainingTasks} 件残り ／ 全 {tasks.length} 件
             </p>
           </div>
-          {page === 'tasks' && (
-            <HeaderSettings
-              warningHours={settings.warningHours}
-              onChange={v => updateSettings({ warningHours: v })}
-            />
-          )}
+          <div className="header-controls">
+            {page === 'tasks' && (
+              <HeaderSettings
+                warningHours={settings.warningHours}
+                onChange={v => updateSettings({ warningHours: v })}
+              />
+            )}
+            <div className="user-menu">
+              <span className="username-display">👤 {username}</span>
+              <button className="btn-signout" onClick={signOut}>ログアウト</button>
+            </div>
+          </div>
         </div>
         <TabNav
           current={page}

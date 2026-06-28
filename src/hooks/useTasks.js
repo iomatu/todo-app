@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react'
 import { loadTasks, createTask, editTask, removeTask } from '../services/storage'
 
-export function useTasks() {
+export function useTasks(userId) {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadTasks().then(data => {
+    if (!userId) { setTasks([]); setLoading(false); return }
+    loadTasks(userId).then(data => {
       setTasks(data)
       setLoading(false)
     })
-  }, [])
+  }, [userId])
 
   async function addTask(task) {
     setTasks(prev => [task, ...prev])
-    await createTask(task)
+    await createTask(task, userId)
   }
 
   async function updateTask(id, changes) {

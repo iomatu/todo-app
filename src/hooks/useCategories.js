@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { loadCategories, createCategory, removeCategory } from '../services/storage'
 
-export function useCategories() {
+export function useCategories(userId) {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    loadCategories().then(data => setCategories(data))
-  }, [])
+    if (!userId) { setCategories([]); return }
+    loadCategories(userId).then(data => setCategories(data))
+  }, [userId])
 
   async function addCategory(name) {
     const trimmed = name.trim()
@@ -14,7 +15,7 @@ export function useCategories() {
     if (categories.some(c => c.name === trimmed)) return
     const newCategory = { id: crypto.randomUUID(), name: trimmed }
     setCategories(prev => [...prev, newCategory])
-    await createCategory(newCategory)
+    await createCategory(newCategory, userId)
   }
 
   async function deleteCategory(id) {

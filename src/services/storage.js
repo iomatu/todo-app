@@ -3,10 +3,11 @@ import { supabase } from './supabase'
 const LOCAL_SETTINGS_KEY = 'todo-app-settings'
 
 // タスク
-export async function loadTasks() {
+export async function loadTasks(userId) {
   const { data, error } = await supabase
     .from('tasks')
     .select('*')
+    .eq('user_id', userId)
     .order('created_at', { ascending: true })
   if (error) { console.error('タスクの読み込みに失敗しました:', error); return [] }
   return data.map(t => ({
@@ -23,7 +24,7 @@ export async function loadTasks() {
   }))
 }
 
-export async function createTask(task) {
+export async function createTask(task, userId) {
   const { data, error } = await supabase
     .from('tasks')
     .insert({
@@ -37,6 +38,7 @@ export async function createTask(task) {
       category_id: task.categoryId,
       created_at: task.createdAt,
       updated_at: task.updatedAt,
+      user_id: userId,
     })
     .select()
     .single()
@@ -67,19 +69,20 @@ export async function removeTask(id) {
 }
 
 // カテゴリ
-export async function loadCategories() {
+export async function loadCategories(userId) {
   const { data, error } = await supabase
     .from('categories')
     .select('*')
+    .eq('user_id', userId)
     .order('created_at', { ascending: true })
   if (error) { console.error('カテゴリの読み込みに失敗しました:', error); return [] }
   return data.map(c => ({ id: c.id, name: c.name }))
 }
 
-export async function createCategory(category) {
+export async function createCategory(category, userId) {
   const { data, error } = await supabase
     .from('categories')
-    .insert({ id: category.id, name: category.name })
+    .insert({ id: category.id, name: category.name, user_id: userId })
     .select()
     .single()
   if (error) console.error('カテゴリの作成に失敗しました:', error)
@@ -92,10 +95,11 @@ export async function removeCategory(id) {
 }
 
 // メモ
-export async function loadNotes() {
+export async function loadNotes(userId) {
   const { data, error } = await supabase
     .from('notes')
     .select('*')
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
   if (error) { console.error('メモの読み込みに失敗しました:', error); return [] }
   return data.map(n => ({
@@ -108,7 +112,7 @@ export async function loadNotes() {
   }))
 }
 
-export async function createNote(note) {
+export async function createNote(note, userId) {
   const { data, error } = await supabase
     .from('notes')
     .insert({
@@ -118,6 +122,7 @@ export async function createNote(note) {
       category_id: note.categoryId,
       created_at: note.createdAt,
       updated_at: note.updatedAt,
+      user_id: userId,
     })
     .select()
     .single()
@@ -143,7 +148,7 @@ export async function removeNote(id) {
   if (error) console.error('メモの削除に失敗しました:', error)
 }
 
-// 設定（設定だけlocalStorageに保存）
+// 設定（localStorageに保存）
 export function loadSettings() {
   try {
     const data = localStorage.getItem(LOCAL_SETTINGS_KEY)
