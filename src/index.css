@@ -441,18 +441,28 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 8px 24px rgba(124, 58, 237, 0.1);
 }
 
-.task-card--todo {
-  border-left: 4px solid #c4b5fd;
-}
-
-.task-card--in_progress {
-  border-left: 4px solid #7c3aed;
-  background: #fdf8ff;
-}
-
+/* 完了カードだけ透明度を下げる */
 .task-card--done {
-  border-left: 4px solid #6ee7b7;
   opacity: 0.5;
+}
+
+/* ステータスボタンの色分け */
+.btn-status--todo {
+  background: linear-gradient(135deg, #ede9fe, #fce7f3);
+  color: #7c3aed;
+  border-color: #e9d5ff;
+}
+
+.btn-status--in_progress {
+  background: #7c3aed;
+  color: #fff;
+  border-color: #7c3aed;
+}
+
+.btn-status--done {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #6ee7b7;
 }
 
 .task-card--overdue {
@@ -579,8 +589,6 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   padding: 4px 14px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #ede9fe, #fce7f3);
-  color: #7c3aed;
   border: 2px solid #e9d5ff;
   transition: all 0.2s;
 }

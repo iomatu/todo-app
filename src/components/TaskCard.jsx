@@ -32,7 +32,7 @@ export default function TaskCard({ task, onUpdate, onDelete, onEdit, categories,
     return (
         <div className={[
             'task-card',
-            task.status === STATUS.DONE ? 'task-card--done' : '',
+            `task-card--${task.status}`,
             deadlineStatus === 'overdue' ? 'task-card--overdue' : '',
             deadlineStatus === 'warning' ? 'task-card--warning' : '',
         ].join(' ')}>
@@ -71,7 +71,10 @@ export default function TaskCard({ task, onUpdate, onDelete, onEdit, categories,
             </div>
 
             <div className="task-card-footer">
-                <button className="btn-status" onClick={handleStatusClick}>
+                <button
+                    className={`btn-status btn-status--${task.status}`}
+                    onClick={handleStatusClick}
+                >
                     {STATUS_LABEL[task.status]}
                 </button>
                 <span className="status-hint">クリックで次のステータスへ</span>
