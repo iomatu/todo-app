@@ -50,3 +50,26 @@ export async function getUsername(userId) {
     .maybeSingle()
   return data?.username ?? null
 }
+
+// パスワード変更
+export async function updatePassword(newPassword) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
+  return { error }
+}
+
+// アカウント削除
+export async function deleteAccount() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: new Error('ユーザーが見つかりません') }
+
+  // プロフィール削除（タスク・メモ・カテゴリはカスケード削除）
+  const { error } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', user.id)
+  if (error) return { error }
+
+  await supabase.auth.signOut()
+  localStorage.removeItem('todo-app-username')
+  return { error: null }
+}

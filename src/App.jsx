@@ -16,6 +16,7 @@ import { useNotes } from './hooks/useNotes'
 import { useAuth } from './hooks/useAuth'
 import { signOut } from './services/auth'
 import { sortTasks } from './utils/sort'
+import AccountSettings from './components/AccountSettings'
 
 function App() {
   const { user, username, loading: authLoading } = useAuth()
@@ -26,6 +27,7 @@ function App() {
   const [editingTask, setEditingTask] = useState(null)
   const [editingNote, setEditingNote] = useState(null)
   const [page, setPage] = useState('tasks')
+  const [showAccountSettings, setShowAccountSettings] = useState(false)
 
   const filter = settings.filter
   const activeCategory = settings.activeCategory
@@ -54,7 +56,7 @@ function App() {
   }
 
   if (!user) {
-    return <LoginForm onLogin={() => {}} />
+    return <LoginForm onLogin={() => { }} />
   }
 
   return (
@@ -75,9 +77,20 @@ function App() {
               />
             )}
             <div className="user-menu">
-              <span className="username-display">👤 {username}</span>
+              <button
+                className="username-display"
+                onClick={() => setShowAccountSettings(true)}
+              >
+                👤 {username}
+              </button>
               <button className="btn-signout" onClick={signOut}>ログアウト</button>
             </div>
+            {showAccountSettings && (
+              <AccountSettings
+                username={username}
+                onClose={() => setShowAccountSettings(false)}
+              />
+            )}
           </div>
         </div>
         <TabNav
