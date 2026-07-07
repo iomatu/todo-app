@@ -36,14 +36,15 @@ export default function LoginForm({ onLogin }) {
             if (error) {
                 setError('ユーザー名またはパスワードが違います')
             } else {
-                onLogin(user)
+                localStorage.setItem('todo-app-username', username)
+                onLogin(user, username)
             }
         } else {
             const { user, error } = await signUp(username, password)
             if (error) {
                 setError('登録に失敗しました。もう一度お試しください')
             } else {
-                onLogin(user)
+                onLogin(user, username)
             }
         }
         setLoading(false)

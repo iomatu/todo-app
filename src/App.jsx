@@ -56,7 +56,9 @@ function App() {
   }
 
   if (!user) {
-    return <LoginForm onLogin={() => { }} />
+    return <LoginForm onLogin={(u, name) => {
+      if (name) localStorage.setItem('todo-app-username', name)
+    }} />
   }
 
   return (
